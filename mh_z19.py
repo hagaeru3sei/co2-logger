@@ -12,6 +12,7 @@ except ImportError as e:
     import getrpimodel
 
 # setting
+detect_intarval_sec = 60
 
 if getrpimodel.model() == "3 Model B":
     serial_dev = '/dev/ttyS0'
@@ -34,9 +35,10 @@ def _mh_z19():
         result = ser.write(b"\xff\x01\x86\x00\x00\x00\x00\x00\x79")
         s = ser.read(9)
         if len(s) >= 4 and s[0] == 255 and s[1] == 134:
-            dt = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            print({'datetime': dt, 'co2': (int(s[2])*256) + int(s[3])})
-        sleep(10)
+            timestamp = datetime.datetime.now().timestamp()
+            co2 = (int(s[2])*256) + int(s[3])
+            print({'timestamp': dt, 'co2': co2})
+        sleep(detect_intarval_sec)
 
 
 def _stop():
